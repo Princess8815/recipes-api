@@ -32,5 +32,26 @@ namespace Recipes_Api.Controllers
             _repository.AddCategory(category);
             return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
         }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] Category category)
+        {
+            var existing = _repository.GetCategoryById(category.Id);
+            if (existing == null) return NotFound();
+            existing.Name = category.Name;
+            // Assuming there's an UpdateCategory method in the repository
+            _repository.UpdateCategory(existing);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var existing = _repository.GetCategoryById(id);
+            if (existing == null) return NotFound();
+            // Assuming there's a DeleteCategory method in the repository
+            _repository.DeleteCategory(id);
+            return NoContent();
+        }
     }
 }

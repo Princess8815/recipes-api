@@ -165,6 +165,22 @@ namespace Recipes_Api.Repositories
             });
             File.WriteAllText(path, json);
         }
+
+        public Favorite? GetFavoriteById(int id)
+        {
+            return _favorites.FirstOrDefault(f => f.Id == id);
+        }
+
+        public bool UpdateFavorite(Favorite favorite)
+        {
+            var existing = _favorites.FirstOrDefault(f => f.Id == favorite.Id);
+            if (existing == null)
+                return false;
+            existing.UserName = favorite.UserName;
+            existing.RecipeId = favorite.RecipeId;
+            Save(_favoritesPath, _favorites);
+            return true;
+        }
     }
 }
 

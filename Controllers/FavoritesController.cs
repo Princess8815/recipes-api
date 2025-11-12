@@ -29,6 +29,17 @@ namespace Recipes_Api.Controllers
             return Ok(favorite);
         }
 
+        [HttpPut]
+        public IActionResult UpdateFavorite([FromBody] Favorite favorite)
+        {
+            var existing = _repository.GetFavoriteById(favorite.Id);
+            if (existing == null) return NotFound();
+            existing.UserName = favorite.UserName;
+            existing.RecipeId = favorite.RecipeId;
+            _repository.UpdateFavorite(existing);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteFavorite(int id)
         {

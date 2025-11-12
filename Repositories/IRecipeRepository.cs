@@ -17,9 +17,19 @@ namespace Recipes_Api.Repositories
         Category? GetCategoryById(int id);
         void AddCategory(Category category);
 
+        bool UpdateCategory(Category category);
+
+        bool DeleteCategory(int id);
+
         IEnumerable<Favorite> GetFavorites(string userName);
+
+        Favorite? GetFavoriteById(int id);
         void AddFavorite(Favorite favorite);
+
+        bool UpdateFavorite(Favorite favorite);
         bool RemoveFavorite(int id);
+
+
 
 
 

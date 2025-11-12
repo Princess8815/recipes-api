@@ -280,6 +280,26 @@ namespace Recipes_Api.Repositories
             return favorites;
         }
 
+        public Favorite? GetFavoriteById(int id)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT Id, RecipeId, UserName FROM Favorites WHERE Id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return new Favorite
+                {
+                    Id = reader.GetInt32(0),
+                    RecipeId = reader.GetInt32(1),
+                    UserName = reader.IsDBNull(2) ? null : reader.GetString(2)
+                };
+            }
+            return null;
+        }
+
         public void AddFavorite(Favorite favorite)
         {
             using var conn = new SqliteConnection(_connectionString);
@@ -290,6 +310,19 @@ namespace Recipes_Api.Repositories
             cmd.Parameters.AddWithValue("@recipeId", favorite.RecipeId);
             cmd.Parameters.AddWithValue("@user", favorite.UserName ?? (object)DBNull.Value);
             cmd.ExecuteNonQuery();
+        }
+
+        public bool UpdateFavorite(Favorite favorite)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "UPDATE Favorites SET RecipeId = @recipeId, UserName = @user WHERE Id = @id";
+            cmd.Parameters.AddWithValue("@id", favorite.Id);
+            cmd.Parameters.AddWithValue("@recipeId", favorite.RecipeId);
+            cmd.Parameters.AddWithValue("@user", favorite.UserName ?? (object)DBNull.Value);
+            cmd.ExecuteNonQuery();
+            return true;
         }
 
         public bool RemoveFavorite(int id)
